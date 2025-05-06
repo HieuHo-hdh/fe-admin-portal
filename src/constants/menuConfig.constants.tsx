@@ -23,15 +23,15 @@ export const sidebarMenuItems: MenuItem[] = [
   },
 ];
 
-export const profileMenuItems: (userProfile: LoginResponse) => MenuProps['items'] = (
+export const profileMenuItems: (userProfile: LoginResponse | null) => MenuProps['items'] = (
   userProfile,
 ) => [
   {
     key: 'Detail',
     label: (
       <div className='flex flex-col gap-1 py-1'>
-        <p className='font-medium leading-none'>{userProfile.firstName}</p>
-        <p className='text-xs leading-none text-neutral-500'>{userProfile.email}</p>
+        <p className='font-medium leading-none'>{userProfile?.firstName}</p>
+        <p className='text-xs leading-none text-neutral-500'>{userProfile?.email}</p>
       </div>
     ),
   },

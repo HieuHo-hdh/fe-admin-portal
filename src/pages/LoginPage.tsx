@@ -27,7 +27,7 @@ const LoginPage: FC = () => {
 
   const onFinish = useCallback(async (values: LoginFormValues) => {
     try {
-      await dispatch(authActions.login(values)).unwrap();
+      await dispatch(authActions.login(values));
       message.success(LOGIN_SUCCESS);
       navigate('/');
     } catch {
