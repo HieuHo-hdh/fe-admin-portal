@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { authActions } from '@/redux/actions/authAction';
 import { LOGIN_SUCCESS } from '@/constants/messages.constants';
+import { showNotification } from '@/redux/reducers/appSlice';
+import { HttpStatusCode } from 'axios';
 
 const { Title, Text } = Typography;
 
@@ -25,15 +27,27 @@ const LoginPage: FC = () => {
     }
   }, [error]);
 
-  const onFinish = useCallback(async (values: LoginFormValues) => {
-    try {
-      await dispatch(authActions.login(values));
-      message.success(LOGIN_SUCCESS);
-      navigate('/');
-    } catch {
-      // Error is handled by the auth slice and displayed via useEffect
-    }
-  }, [dispatch, navigate]);
+  const onFinish = useCallback(
+    async (values: LoginFormValues) => {
+      try {
+        const result = await dispatch(authActions.login(values));
+        // TODO: Check result: code, message for showing notification
+        if (result)
+          dispatch(
+            showNotification({
+              type: 'success',
+              message: HttpStatusCode.Ok.toString(),
+              description: LOGIN_SUCCESS,
+            }),
+          );
+        message.success(LOGIN_SUCCESS);
+        navigate('/');
+      } catch {
+        // Error is handled by the auth slice and displayed via useEffect
+      }
+    },
+    [dispatch, navigate],
+  );
 
   return (
     <div className='w-full max-w-xs px-4'>

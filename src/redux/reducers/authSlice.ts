@@ -18,7 +18,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout(state) {
+    logout: (state) => {
       state.userProfile = null;
       state.loading = false;
       state.error = null;

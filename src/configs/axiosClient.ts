@@ -1,4 +1,6 @@
 import { LOCAL_STORAGE_KEY } from '@/constants/localStorage.constants';
+import { showNotification } from '@/redux/reducers/appSlice';
+import { store } from '@/redux/store';
 import axios from 'axios';
 
 const DUMMY_JSON_API =
@@ -28,9 +30,24 @@ axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      store.dispatch(
+        showNotification({
+          type: 'error',
+          message: 'API Error',
+          description: error.response?.data?.message || error.message,
+        }),
+      );
       localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
       window.location.href = '/login';
+    } else if (error.message) {
+      store.dispatch(
+        showNotification({
+          type: 'error',
+          message: error?.code,
+          description: error.message,
+        }),
+      );
     }
     return Promise.reject(error);
   },

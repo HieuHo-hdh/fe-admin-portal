@@ -72,7 +72,7 @@ const UsersPage: FC = () => {
   }, [dispatch, tableState]);
 
   return (
-    <div className='p-4'>
+    <>
       <Flex className='flex flex-row mb-4' justify='space-between' align='center'>
         <Space>
           <Search placeholder='Search name' onSearch={handleSearch} className='w-fit' />
@@ -114,7 +114,7 @@ const UsersPage: FC = () => {
         }}
         user={selectedUser}
       />
-    </div>
+    </>
   );
 };
 

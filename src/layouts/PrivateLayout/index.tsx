@@ -14,7 +14,7 @@ const PrivateLayout: FC = () => {
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       <Layout>
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
-        <Content>
+        <Content className='p-4'>
           <Outlet />
         </Content>
         <Footer />
