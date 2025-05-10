@@ -1,6 +1,6 @@
 import { profileMenuItems } from '@/constants/menuConfig.constants';
-import { Avatar, Button, Dropdown, Layout, theme } from 'antd';
-import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Dropdown, Layout, theme } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { FC } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { logout } from '@/redux/reducers/authSlice';
@@ -9,12 +9,7 @@ import { LOCAL_STORAGE_KEY } from '@/constants/localStorage.constants';
 
 const { Header: AntHeader } = Layout;
 
-type HeaderProps = {
-  collapsed: boolean;
-  setCollapsed: (collapsed: boolean) => void;
-};
-
-const Header: FC<HeaderProps> = ({ collapsed, setCollapsed }) => {
+const Header: FC = () => {
   const { userProfile } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -34,13 +29,8 @@ const Header: FC<HeaderProps> = ({ collapsed, setCollapsed }) => {
   return (
     <AntHeader
       style={{ background: colorBgContainer }}
-      className='flex justify-between items-center'
+      className='flex justify-end items-center'
     >
-      <Button
-        type='default'
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => setCollapsed(!collapsed)}
-      />
       <Dropdown
         menu={{
           items: profileMenuItems(userProfile),

@@ -1,47 +1,27 @@
-import { FC, useCallback, useEffect } from 'react';
-import { Form, Input, Button, Card, Typography, message } from 'antd';
+import { FC, useCallback } from 'react';
+import { Form, Input, Button, Card, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { authActions } from '@/redux/actions/authAction';
-import { LOGIN_SUCCESS } from '@/constants/messages.constants';
-import { showNotification } from '@/redux/reducers/appSlice';
-import { HttpStatusCode } from 'axios';
+import { LoginResponse } from '@/redux/apis/auth.api';
 
 const { Title, Text } = Typography;
-
-interface LoginFormValues {
-  username: string;
-  password: string;
-}
 
 const LoginPage: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const { loading, error } = useAppSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (error) {
-      message.error(error);
-    }
-  }, [error]);
+  const { loading } = useAppSelector((state) => state.auth);
 
   const onFinish = useCallback(
-    async (values: LoginFormValues) => {
+    async (values: { username: string; password: string }) => {
       try {
         const result = await dispatch(authActions.login(values));
         // TODO: Check result: code, message for showing notification
-        if (result)
-          dispatch(
-            showNotification({
-              type: 'success',
-              message: HttpStatusCode.Ok.toString(),
-              description: LOGIN_SUCCESS,
-            }),
-          );
-        message.success(LOGIN_SUCCESS);
-        navigate('/');
+        if ((result?.payload as LoginResponse)?.accessToken) {
+          navigate('/');
+        }
       } catch {
         // Error is handled by the auth slice and displayed via useEffect
       }

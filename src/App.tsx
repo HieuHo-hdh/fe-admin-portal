@@ -8,9 +8,11 @@ import { handleGenerateRoutes } from '@/utils/generateRoutes';
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from '@/constants/routes.constants';
 import NotFoundPage from '@/pages/NotFoundPage';
 import { useEffect } from 'react';
-import { useAppSelector } from './hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { clearNotification } from './redux/reducers/appSlice';
 
 function App() {
+  const dispatch = useAppDispatch();
   const privateRoutes = handleGenerateRoutes(PRIVATE_ROUTES);
   const publicRoutes = handleGenerateRoutes(PUBLIC_ROUTES);
   const { notification: appNotification } = useAppSelector((state) => state.app);
@@ -23,8 +25,10 @@ function App() {
         message: appNotification.message,
         description: appNotification.description,
       });
+      // Clear notification after showing
+      dispatch(clearNotification());
     }
-  }, [api, appNotification]);
+  }, [api, appNotification, dispatch]);
 
   return (
     <ConfigProvider

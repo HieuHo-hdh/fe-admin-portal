@@ -13,7 +13,7 @@ const PrivateLayout: FC = () => {
     <Layout style={{ minHeight: '100vh' }}>
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       <Layout>
-        <Header collapsed={collapsed} setCollapsed={setCollapsed} />
+        <Header />
         <Content className='p-4'>
           <Outlet />
         </Content>
