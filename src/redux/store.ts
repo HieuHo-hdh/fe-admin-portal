@@ -3,6 +3,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import rootReducer from '@/redux/reducers';
+import { handleShowMessage } from '@/redux/showNotificationMiddleware';
 
 const persistConfig = {
   key: 'root',
@@ -21,7 +22,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }),
+    }).concat(handleShowMessage),
 });
 
 export const persistor = persistStore(store);

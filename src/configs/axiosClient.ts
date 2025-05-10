@@ -40,14 +40,6 @@ axiosClient.interceptors.response.use(
       localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
       window.location.href = '/login';
-    } else if (error.message) {
-      store.dispatch(
-        showNotification({
-          type: 'error',
-          message: error?.code,
-          description: error.message,
-        }),
-      );
     }
     return Promise.reject(error);
   },
