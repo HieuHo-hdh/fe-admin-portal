@@ -10,7 +10,10 @@ import { User } from '@/redux/apis/users.api';
 interface UsersState {
   users: User[];
   total: number;
-  loading: boolean;
+  loading: boolean; // General loading state
+  loadingCreate: boolean; // Loading for create user
+  loadingUpdate: boolean; // Loading for update user
+  loadingDelete: boolean; // Loading for delete user
   error: string | null;
 }
 
@@ -18,6 +21,9 @@ const initialState: UsersState = {
   users: [],
   total: 0,
   loading: false,
+  loadingCreate: false,
+  loadingUpdate: false,
+  loadingDelete: false,
   error: null,
 };
 
@@ -44,50 +50,52 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsersAsync.rejected, (state, action) => {
         state.loading = false;
+        state.users = initialState.users;
+        state.total = initialState.total;
         state.error = action.payload as string;
       })
       // Add user
       .addCase(addUserAsync.pending, (state) => {
-        state.loading = true;
+        state.loadingCreate = true;
         state.error = null;
       })
       .addCase(addUserAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.users.push(action.payload);
+        state.loadingCreate = false;
+        state.users = [action.payload, ...state.users];
         state.total += 1;
       })
       .addCase(addUserAsync.rejected, (state, action) => {
-        state.loading = false;
+        state.loadingCreate = false;
         state.error = action.payload as string;
       })
       // Update user
       .addCase(updateUserAsync.pending, (state) => {
-        state.loading = true;
+        state.loadingUpdate = true;
         state.error = null;
       })
       .addCase(updateUserAsync.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingUpdate = false;
         const index = state.users.findIndex((u) => u.id === action.payload.id);
         if (index !== -1) {
           state.users[index] = action.payload;
         }
       })
       .addCase(updateUserAsync.rejected, (state, action) => {
-        state.loading = false;
+        state.loadingUpdate = false;
         state.error = action.payload as string;
       })
       // Delete user
       .addCase(deleteUserAsync.pending, (state) => {
-        state.loading = true;
+        state.loadingDelete = true;
         state.error = null;
       })
       .addCase(deleteUserAsync.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingDelete = false;
         state.users = state.users.filter((user) => user.id !== action.payload.id);
         state.total -= 1;
       })
       .addCase(deleteUserAsync.rejected, (state, action) => {
-        state.loading = false;
+        state.loadingDelete = false;
         state.error = action.payload as string;
       });
   },

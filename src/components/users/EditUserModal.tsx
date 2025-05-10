@@ -1,36 +1,30 @@
 import { FC, useEffect } from 'react';
-import { Modal, Form, Input, Button, message, DatePicker } from 'antd';
-import { useAppDispatch } from '@/hooks/useRedux';
+import { Modal, Form, Input, Button, DatePicker } from 'antd';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { updateUserAsync } from '@/redux/actions/usersAction';
 import { User } from '@/redux/apis/users.api';
-import { UPDATE_USER_FAILED, UPDATE_USER_SUCCESS } from '@/constants/messages.constants';
+import dayjs from 'dayjs';
+import { DATE_DISPLAY_FORMAT } from '@/constants/datetime.constant';
+import { EditUserForm } from '@/models/Users.model';
 
-interface EditUserModalProps {
+type EditUserModalProps = {
   open: boolean;
   onClose: () => void;
   user: User | null;
 }
 
-interface EditUserForm {
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
 const EditUserModal: FC<EditUserModalProps> = ({ open, onClose, user }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const { loadingUpdate } = useAppSelector((state) => state.users);
 
   const handleSubmit = async (values: EditUserForm) => {
     if (!user) return;
     try {
-      onClose();
       await dispatch(updateUserAsync({ id: user.id, ...values }));
-      message.success(UPDATE_USER_SUCCESS);
+      onClose();
       form.resetFields();
-    } catch {
-      message.error(UPDATE_USER_FAILED);
-    }
+    } catch { /* empty */ }
   };
 
   useEffect(() => {
@@ -39,6 +33,7 @@ const EditUserModal: FC<EditUserModalProps> = ({ open, onClose, user }) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        birthDate: dayjs(user.birthDate),
       });
     }
   }, [user, form]);
@@ -56,8 +51,8 @@ const EditUserModal: FC<EditUserModalProps> = ({ open, onClose, user }) => {
       onCancel={onClose}
       footer={
         <div className='flex justify-end gap-2'>
-          <Button onClick={() => onClose()}>Cancel</Button>
-          <Button type='primary' onClick={() => form.submit()}>
+          <Button onClick={() => onClose()} loading={loadingUpdate}>Cancel</Button>
+          <Button type='primary' onClick={() => form.submit()} loading={loadingUpdate}>
             Submit
           </Button>
         </div>
@@ -89,7 +84,7 @@ const EditUserModal: FC<EditUserModalProps> = ({ open, onClose, user }) => {
           label='Birthday'
           rules={[{ required: true, message: 'Please select birthday!' }]}
         >
-          <DatePicker format='MM/DD/YYYY' className='w-full' />
+          <DatePicker format={DATE_DISPLAY_FORMAT} className='w-full' />
         </Form.Item>
       </Form>
     </Modal>

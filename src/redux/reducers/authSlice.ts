@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { login } from '@/redux/actions/authAction';
 import { LoginResponse } from '@/redux/apis/auth.api';
+import { ShowNotificationPayload } from '@/models/Notification.model';
 
 interface AuthState {
   userProfile: LoginResponse | null;
   loading: boolean;
-  error: string | null;
+  error: ShowNotificationPayload | null;
 }
 
 const initialState: AuthState = {
@@ -38,7 +39,7 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.userProfile = null;
-        state.error = action.payload as string;
+        state.error = action.payload as ShowNotificationPayload;
       });
   },
 });

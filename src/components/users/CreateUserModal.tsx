@@ -1,33 +1,26 @@
 import { FC, useEffect } from 'react';
-import { Modal, Form, Input, Button, message, DatePicker } from 'antd';
-import { useAppDispatch } from '@/hooks/useRedux';
+import { Modal, Form, Input, Button, DatePicker } from 'antd';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { addUserAsync } from '@/redux/actions/usersAction';
-import { CREATE_USER_FAILED, CREATE_USER_SUCCESS } from '@/constants/messages.constants';
+import { DATE_DISPLAY_FORMAT } from '@/constants/datetime.constant';
+import { CreateUserForm } from '@/models/Users.model';
 
 interface CreateUserModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-interface CreateUserForm {
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
 const CreateUserModal: FC<CreateUserModalProps> = ({ open, onClose }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const { loadingCreate } = useAppSelector((state) => state.users);
 
   const handleSubmit = async (values: CreateUserForm) => {
     try {
-      onClose();
       await dispatch(addUserAsync(values));
-      message.success(CREATE_USER_SUCCESS);
+      onClose();
       form.resetFields();
-    } catch {
-      message.error(CREATE_USER_FAILED);
-    }
+    } catch { /* empty */ }
   };
 
   useEffect(() => {
@@ -43,8 +36,8 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ open, onClose }) => {
       onCancel={onClose}
       footer={
         <div className='flex justify-end gap-2'>
-          <Button onClick={() => onClose()}>Cancel</Button>
-          <Button type='primary' onClick={() => form.submit()}>
+          <Button onClick={() => onClose()} loading={loadingCreate}>Cancel</Button>
+          <Button type='primary' onClick={() => form.submit()} loading={loadingCreate}>
             Submit
           </Button>
         </div>
@@ -83,7 +76,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ open, onClose }) => {
           label='Birthday'
           rules={[{ required: true, message: 'Please select birthday!' }]}
         >
-          <DatePicker format='MM/DD/YYYY' className='w-full' />
+          <DatePicker format={DATE_DISPLAY_FORMAT} className='w-full' />
         </Form.Item>
       </Form>
     </Modal>

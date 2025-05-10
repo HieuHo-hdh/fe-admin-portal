@@ -9,6 +9,7 @@ export interface User {
   lastName: string;
   email: string;
   role: string;
+  birthDate: string;
   company: {
     name: string;
     title: string;

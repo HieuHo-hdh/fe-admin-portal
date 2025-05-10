@@ -2,6 +2,8 @@ import { User } from '@/models/Users.model';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import { DATE_DISPLAY_FORMAT } from './datetime.constant';
 
 export const USER_TABLE_COLUMNS: ({
   handleEdit,
@@ -28,7 +30,7 @@ export const USER_TABLE_COLUMNS: ({
     dataIndex: 'birthDate',
     key: 'birthDate',
     sorter: true,
-    render: (date: string) => new Date(date).toLocaleDateString(),
+    render: (date: string) => dayjs(date).format(DATE_DISPLAY_FORMAT),
   },
   {
     title: 'Actions',
